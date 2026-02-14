@@ -105,7 +105,6 @@ export function generateThaliReceipt(customerName, thalis) {
   if(typeof customerName !== "string" || !Array.isArray(thalis) || thalis.length === 0){
     return "";
   }
-  "- {thali name} x Rs.{price}"
   return `THALI RECEIPT\n---\nCustomer: ${customerName.toUpperCase()}\n${thalis.map((thali)=>
     { return `- ${thali.name} x Rs.${thali.price}`}).join(" ")}
     \n---\nTotal: Rs.${thalis.reduce((curr , ele)=>{
