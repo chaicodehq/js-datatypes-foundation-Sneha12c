@@ -54,16 +54,62 @@
  */
 export function createThaliDescription(thali) {
   // Your code here
+  if(typeof thali !== "object" || Array.isArray(thali) || thali === null){
+    return "";
+  }
+  if(!Object.hasOwn(thali, "name") || !Object.hasOwn(thali, "isVeg") || !Object.hasOwn(thali, "items") || !Object.hasOwn(thali, "price")){
+    return "";
+  }
+  return `${thali.name.toUpperCase()} (${ thali.isVeg ? "Veg": "Non-Veg"}) - Items: ${thali.items.join(", ")} - Rs.${thali.price.toFixed(2)}`;
 }
 
 export function getThaliStats(thalis) {
   // Your code here
+  if(!Array.isArray(thalis) || thalis.length===0){
+    return null;
+  }
+  let totalThalis = thalis.length;
+  let vegCount = thalis.filter((thali)=>thali.isVeg).length;
+  let nonVegCount = totalThalis - vegCount;
+  let totalPrice = thalis.reduce((curr, thali)=>{
+    curr += thali.price
+    return curr;
+  }, 0);
+  let avgPrice = (totalPrice/totalThalis).toFixed(2);
+  let cheapest = Infinity, costliest= 0, names = [];
+  thalis.map((thali)=>{
+    cheapest = Math.min(cheapest, thali.price);
+    costliest = Math.max(costliest , thali.price);
+    names.push(thali.name);
+  })
+  
+  return { totalThalis, vegCount, nonVegCount, avgPrice, cheapest, costliest, names }
 }
 
 export function searchThaliMenu(thalis, query) {
   // Your code here
+  if(!Array.isArray(thalis) || typeof query !== "string"){
+    return [];
+  }
+  return thalis.filter((thali)=>{
+    if(typeof thali.name === "string" && thali.name.toLowerCase().includes(query.toLowerCase())) return true;
+    if(thali.items.some((item)=>item.toLowerCase().includes(query.toLowerCase()))){
+      return true;
+    }
+    return false;
+  })
 }
 
 export function generateThaliReceipt(customerName, thalis) {
   // Your code here
+  if(typeof customerName !== "string" || !Array.isArray(thalis) || thalis.length === 0){
+    return "";
+  }
+  "- {thali name} x Rs.{price}"
+  return `THALI RECEIPT\n---\nCustomer: ${customerName.toUpperCase()}\n${thalis.map((thali)=>
+    { return `- ${thali.name} x Rs.${thali.price}`}).join(" ")}
+    \n---\nTotal: Rs.${thalis.reduce((curr , ele)=>{
+      curr += (ele.price)
+      return curr;
+    }, 0)}\nItems: ${thalis.length}`;
 }
